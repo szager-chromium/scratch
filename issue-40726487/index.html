@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Box-Shadow causes border artifact on table-row</title>
+<style>
+.table {
+padding: 40px;
+display: table;
+background: #000;
+}
+
+.table-row {
+display: table-row;
+background: #ddd;
+}
+
+.table-cell {
+height: 60px;
+min-width: 100px;
+display: table-cell;
+border-top-right-radius: 30px;
+border-bottom-right-radius: 30px;
+box-shadow: 30px 0 0 0 #ddd;
+}
+</style>
+</head>
+<body>
+<h4>Problem: A rounded table-row element, with a similarly colored box-shadow, has a border artifact.</h4>
+<p>Expected Result: Border artifact should not be visible.</p>
+<div class="table">
+<div class="table-row">
+<div class="table-cell">test</div>
+</div>
+</div>
+</body>
+</html>
