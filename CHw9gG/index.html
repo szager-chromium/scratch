@@ -39,8 +39,9 @@ opacity:.8;
   const queue = device.queue;
   ctx.configure({
     device: t.device,
-    format,
-    GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
+    format: navigator.gpu.getPreferredCanvasFormat(),
+    alphaMode: "premultiplied",
+    usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
   });
   const target = document.getElementById('target');
   t.device.queue.copyElementImageToTexture(
