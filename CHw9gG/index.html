@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<style>
+canvas {
+width: 300px;
+height: 150px;
+border: 0;
+}
+#target {
+border:.2rem solid black;
+border-radius:.5rem;
+width:3.2rem;
+padding:.2rem;
+background:linear-gradient(45deg,#fbb,#bff);
+opacity:.8;
+}
+</style>
+<canvas id="cvs" width="300" height="150">
+<div id="target">CSS<br>IS<br>AWESOME</div>
+</canvas>
+
+<script type="module">
+const cvs = document.getElementById('cvs');
+const ctx = cvs.getContext('webgpu');
+if (!ctx) {
+console.log('Failed to get WebGPU context from canvas');
+return;
+}
+const adapter = await navigator.gpu.requestAdapter();
+if (!adapter) {
+console.log('Failed to get WebGPU adapter');
+return;
+}
+const device = await adapter.requestDevice();
+if (!device) {
+console.log('Failed to get WebGPU device');
+return;
+}
+const queue = device.queue;
+ctx.configure({
+device: t.device,
+format,
+GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
+});
+const target = document.getElementById('target');
+t.device.queue.copyElementImageToTexture(
+{ context: ctx },
+{ source: target },
+{ destination: ctx.getCurrentTexture() });
+</script>
+
+</html>
