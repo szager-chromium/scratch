@@ -36,7 +36,6 @@ opacity:.8;
     console.log('Failed to get WebGPU device');
     return;
   }
-  const queue = device.queue;
   ctx.configure({
     device: t.device,
     format: navigator.gpu.getPreferredCanvasFormat(),
@@ -44,7 +43,7 @@ opacity:.8;
     usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
   });
   const target = document.getElementById('target');
-  t.device.queue.copyElementImageToTexture(
+  device.queue.copyElementImageToTexture(
     { context: ctx },
     { source: target },
     { destination: ctx.getCurrentTexture() });
