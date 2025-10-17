@@ -37,7 +37,7 @@ opacity:.8;
     return;
   }
   ctx.configure({
-    device: t.device,
+    device: device,
     format: navigator.gpu.getPreferredCanvasFormat(),
     alphaMode: "premultiplied",
     usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
