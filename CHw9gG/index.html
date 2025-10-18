@@ -1,66 +1,70 @@
 <!DOCTYPE html>
 <style>
  canvas {
-   width: 300px;
-   height: 150px;
    border: 0;
  }
- #target {
-   border:.2rem solid black;
+ .css-is-awesome {
+   border:.1rem solid black;
    border-radius:.5rem;
    width:3.2rem;
    padding:.2rem;
    background:linear-gradient(45deg,#fbb,#bff);
-   opacity:.8;
+   font-family:sans-serif;
+ }
+ .css-is-awesome::before {
+   content: "CSS IS AWESOME";
  }
  #log {
    position: absolute;
    left: 350px;
+   top: 1rem;
    max-height: 90vh;
    overflow: auto;
  }
 </style>
-<canvas id="cvs" width="300" height="150">
-<div id="target">CSS<br>IS<br>AWESOME</div>
+<canvas id="cvs" width="320" height="240" layoutsubtree>
+<div id="target" class="css-is-awesome"></div>
 </canvas>
 
 <pre id="log"></pre>
 
 <script type="module">
-(async function() {
-  const log = document.getElementById('log');
-  const cvs = document.getElementById('cvs');
-  try {
-    const ctx = cvs.getContext('webgpu');
-    if (!ctx) {
-      log.innerText += 'Failed to get WebGPU context from canvas\n';
-      return;
-    }
-    const adapter = await navigator.gpu.requestAdapter();
-    if (!adapter) {
-      log.innerText += 'Failed to get WebGPU adapter\n';
-      return;
-    }
-    const device = await adapter.requestDevice();
-    if (!device) {
-      log.innerText += 'Failed to get WebGPU device\n';
-      return;
-    }
-    ctx.configure({
-      device: device,
-      format: navigator.gpu.getPreferredCanvasFormat(),
-      alphaMode: "premultiplied",
-      usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
-    });
-    const target = document.getElementById('target');
-    device.queue.copyElementImageToTexture(
-      { context: ctx },
-      { source: target },
-      { destination: ctx.getCurrentTexture() });
-  } catch ({ name, msg }) {
-    log.innerText += `${name}: ${msg}`;
+const log = document.getElementById('log');
+const cvs = document.getElementById('cvs');
+try {
+  const ctx = cvs.getContext('webgpu');
+  if (!ctx) {
+    log.innerText += 'Failed to get WebGPU context from canvas\n';
+    return;
   }
-})();
+  const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) {
+    throw new TypeError('Failed to get WebGPU adapter');
+  }
+  const device = await adapter.requestDevice();
+  if (!device) {
+    throw new TypeError('Failed to get WebGPU device');
+  }
+  ctx.configure({
+    device: device,
+    format: navigator.gpu.getPreferredCanvasFormat(),
+    usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
+  });
+  const img = new Image(320, 240);
+  img.src = "four-colors.png";
+  await new Promise(resolve => img.addEventListener('load', resolve));
+  t.queue.copyExternalImageToTexture(
+    { source: img },
+    { texture: ctx.getCurrentTexture() },
+    [ 320, 240 ] );
+  //const target = document.getElementById('target');
+  //device.queue.copyElementImageToTexture(
+  //  { context: ctx },
+  //  { source: target },
+  //  { destination: ctx.getCurrentTexture() });
+} catch ({ name, msg }) {
+  log.innerText += `${name}: ${msg}\n`;
+}
 </script>
 
 </html>
