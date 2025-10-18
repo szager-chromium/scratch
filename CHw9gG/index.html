@@ -1,39 +1,48 @@
 <!DOCTYPE html>
 <style>
-canvas {
-width: 300px;
-height: 150px;
-border: 0;
-}
-#target {
-border:.2rem solid black;
-border-radius:.5rem;
-width:3.2rem;
-padding:.2rem;
-background:linear-gradient(45deg,#fbb,#bff);
-opacity:.8;
-}
+ canvas {
+   width: 300px;
+   height: 150px;
+   border: 0;
+ }
+ #target {
+   border:.2rem solid black;
+   border-radius:.5rem;
+   width:3.2rem;
+   padding:.2rem;
+   background:linear-gradient(45deg,#fbb,#bff);
+   opacity:.8;
+ }
+ #log {
+   position: absolute;
+   left: 350px;
+   max-height: 90vh;
+   overflow: auto;
+ }
 </style>
 <canvas id="cvs" width="300" height="150">
 <div id="target">CSS<br>IS<br>AWESOME</div>
 </canvas>
 
+<pre id="log"></pre>
+
 <script type="module">
 (async function() {
+  const log = document.getElementById('log');
   const cvs = document.getElementById('cvs');
   const ctx = cvs.getContext('webgpu');
   if (!ctx) {
-    console.log('Failed to get WebGPU context from canvas');
+    log.innerText += 'Failed to get WebGPU context from canvas\n';
     return;
   }
   const adapter = await navigator.gpu.requestAdapter();
   if (!adapter) {
-    console.log('Failed to get WebGPU adapter');
+    log.innerText += 'Failed to get WebGPU adapter\n';
     return;
   }
   const device = await adapter.requestDevice();
   if (!device) {
-    console.log('Failed to get WebGPU device');
+    log.innerText += 'Failed to get WebGPU device\n');
     return;
   }
   ctx.configure({
