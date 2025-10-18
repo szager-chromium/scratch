@@ -53,7 +53,7 @@ try {
   const img = new Image(320, 240);
   img.src = "four-colors.png";
   await new Promise(resolve => img.addEventListener('load', resolve));
-  t.queue.copyExternalImageToTexture(
+  device.queue.copyExternalImageToTexture(
     { source: img },
     { texture: ctx.getCurrentTexture() },
     [ 320, 240 ] );
