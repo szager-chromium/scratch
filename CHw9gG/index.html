@@ -34,8 +34,7 @@ const cvs = document.getElementById('cvs');
 try {
   const ctx = cvs.getContext('webgpu');
   if (!ctx) {
-    log.innerText += 'Failed to get WebGPU context from canvas\n';
-    return;
+    throw new TypeError('Failed to get WebGPU context from canvas');
   }
   const adapter = await navigator.gpu.requestAdapter();
   if (!adapter) {
