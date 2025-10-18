@@ -19,6 +19,7 @@
    left: 350px;
    top: 1rem;
    max-height: 90vh;
+   white-space: pre;
    overflow: auto;
  }
 </style>
@@ -26,7 +27,7 @@
 <div id="target" class="css-is-awesome"></div>
 </canvas>
 
-<pre id="log"></pre>
+<div id="log"></div>
 
 <script type="module">
 const log = document.getElementById('log');
@@ -61,9 +62,7 @@ try {
   //  { context: ctx },
   //  { source: target },
   //  { destination: ctx.getCurrentTexture() });
-} catch ({ name, msg }) {
-  log.innerText += `${name}: ${msg}\n`;
+} catch (err) {
+  log.innerText += `${err.name}: ${err.message}\n`;
 }
 </script>
-
-</html>
