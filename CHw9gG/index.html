@@ -30,32 +30,36 @@
 (async function() {
   const log = document.getElementById('log');
   const cvs = document.getElementById('cvs');
-  const ctx = cvs.getContext('webgpu');
-  if (!ctx) {
-    log.innerText += 'Failed to get WebGPU context from canvas\n';
-    return;
+  try {
+    const ctx = cvs.getContext('webgpu');
+    if (!ctx) {
+      log.innerText += 'Failed to get WebGPU context from canvas\n';
+      return;
+    }
+    const adapter = await navigator.gpu.requestAdapter();
+    if (!adapter) {
+      log.innerText += 'Failed to get WebGPU adapter\n';
+      return;
+    }
+    const device = await adapter.requestDevice();
+    if (!device) {
+      log.innerText += 'Failed to get WebGPU device\n');
+      return;
+    }
+    ctx.configure({
+      device: device,
+      format: navigator.gpu.getPreferredCanvasFormat(),
+      alphaMode: "premultiplied",
+      usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
+    });
+    const target = document.getElementById('target');
+    device.queue.copyElementImageToTexture(
+      { context: ctx },
+      { source: target },
+      { destination: ctx.getCurrentTexture() });
+  } catch ({ name, msg }) {
+    log.innerText += `${name}: ${msg}`;
   }
-  const adapter = await navigator.gpu.requestAdapter();
-  if (!adapter) {
-    log.innerText += 'Failed to get WebGPU adapter\n';
-    return;
-  }
-  const device = await adapter.requestDevice();
-  if (!device) {
-    log.innerText += 'Failed to get WebGPU device\n');
-    return;
-  }
-  ctx.configure({
-    device: device,
-    format: navigator.gpu.getPreferredCanvasFormat(),
-    alphaMode: "premultiplied",
-    usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
-  });
-  const target = document.getElementById('target');
-  device.queue.copyElementImageToTexture(
-    { context: ctx },
-    { source: target },
-    { destination: ctx.getCurrentTexture() });
 })();
 </script>
 
